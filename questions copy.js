@@ -39,10 +39,6 @@
 
 function getCircleArea(r) {
   // Your implementation here
-  if (r < 0) {
-    return "Radius cannot be negative";
-  }
-  return Math.PI * Math.pow(r,2);
 }
 
 /**
@@ -62,13 +58,6 @@ function getCircleArea(r) {
 
 function greeting(name, time) {
   // Your implementation here
-  if (time >= 9 && time <= 12) {
-    return "Good morning, " + name + "!";
-  } else if (time >= 13 && time <= 17) {
-    return "Good afternoon, " + name + "!";
-  } else {
-    return "Hello, " + name + "!";
-  }
 }
 
 /**
@@ -87,13 +76,6 @@ function greeting(name, time) {
 
 function checkValue(val) {
   // Your implementation here
-  if (val === null || val === undefined) {
-    return "Your input is a nullish value.";
-  } else if (!val) {
-    return "Your input is a falsy value.";
-  } else {
-    return "Your input is a truthy value.";
-  }
 }
 
 /**
@@ -110,11 +92,8 @@ function checkValue(val) {
 
 function wordLengths(sentence) {
   // Your implementation here
-  return sentence
-    .split(' ') //split by a single space
-    .filter(word =>word.length > 0) //Remove any empty strings resulting from extra spaces
-    .map(word => word.length);
 }
+
 /**
  * Exercise 5:
  * Write a function named `capitalizeSentence` that takes a single parameter `sentence`.
@@ -130,10 +109,6 @@ function wordLengths(sentence) {
 
 function capitalizeSentence(sentence) {
   // Your implementation here
-  return sentence
-    .split(" ")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
 }
 
 /**
@@ -152,14 +127,6 @@ function capitalizeSentence(sentence) {
 
 function rotateArray(array, numRotations) {
   // Your implementation here
-  // Ensure numRotations is within the array length to avoid unnecessary full rotations
-  let rotations = numRotations % array.length;
-  // perform the rotations
-  for (let i = 0; i < rotations; i++) {
-    let lastElement = array.pop(); //remove last element
-    array.unshift(lastElement); //insert it at the begining
-  }
-  return array;
 }
 
 /**
@@ -183,18 +150,6 @@ function rotateArray(array, numRotations) {
 
 function animalClassify(type, weight) {
   // Your implementation here
-  let size;
-  //determine the size based on the weight
-  if (weight <5) {
-    size = "small";    
-  } else if (weight >= 5 && weight < 100) {
-    size = "big";
-  } else {
-    size = "huge";
-  }
-
-  return {type: type, size: size};
-
 }
 
 /**
@@ -222,22 +177,6 @@ function animalClassify(type, weight) {
 
 function describePerson(person) {
   // Your implementation here
-  //determine the pronouns based on gender
-  let pronoun, genderedWord;
-  if (person.gender === "m") {
-    pronoun = "He";
-    genderedWord = "man";
-  } else {
-    pronoun = "She";
-    genderedWord = "woman";
-  }
-
-  //check if the person has a hobby and return the appropriate string
-  if (person.hobby) {
-    return `${person.name} is a ${person.age}-year-old ${genderedWord}. ${pronoun} likes ${person.hobby}!`;
-  } else {
-    return `${person.name} is a ${person.age}-year-old ${genderedWord}. ${pronoun} has no hobbies.`;
-  }
 }
 
 /**
@@ -261,21 +200,6 @@ function describePerson(person) {
 
 function analyzeMarks(marks) {
   // Your implementation here
-  //check if the object is empty
-  const values = Object.values(marks);
-  if (values.length === 0) {
-    return [0, 0, 0]; 
-  }
-
-  //find the lowest and highest marks
-  const lowest = Math.min(...values);
-  const highest = Math.max(...values);
-
-  //calculate the average mark
-  const sum = values.reduce((acc, mark) => acc + mark, 0);
-  const average = (sum / values.length).toFixed(2); //round to 2 decimal places
-
-  return [lowest, highest, parseFloat(average)];
 }
 
 /**
@@ -298,21 +222,6 @@ function analyzeMarks(marks) {
 
 function check(arr, target) {
   // Your implementation here
-  //create an empty map to store the index of each element
-  const map = {};
-
-  //loop through the array
-  for (let i = 0; i < arr.length; i++) {
-    const complement = target - arr[i];
-
-    //check if the complement is already in the map
-    if (map[complement] !== undefined) {
-      return [map[complement], i].sort((a,b) => a -b);
-    }
-
-    //otherwise, store the current element and its index in the map
-    map[arr[i]] = i;
-  }
 }
 
 // Export the function for testing
