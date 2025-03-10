@@ -1,130 +1,140 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// Tic-Tac-Toe component
+const App = () => {
+  const [board, setBoard] = useState(Array(9).fill(null)); // Array of 9 cells, initially empty
+  const [isXNext, setIsXNext] = useState(true); // State to track the next player (X or O)
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  // Function to handle a square being pressed
+  const handlePress = (index: number) => {
+    // If the square is already filled or the game is over, do nothing
+    if (board[index] || calculateWinner(board)) return;
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    // Create a copy of the board to modify
+    const newBoard = board.slice();
+    newBoard[index] = isXNext ? 'X' : 'O';
+    setBoard(newBoard);
+    setIsXNext(!isXNext);
   };
 
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the reccomendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
+  // Function to calculate the winner
+  const calculateWinner = (board: string[]) => {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        return board[a];
+      }
+    }
+    return null;
+  };
+
+  const winner = calculateWinner(board);
+
+  // Function to render a square
+  const renderSquare = (index: number) => (
+    <TouchableOpacity style={styles.square} onPress={() => handlePress(index)}>
+      <Text style={styles.squareText}>{board[index]}</Text>
+    </TouchableOpacity>
+  );
+
+  // Function to reset the game
+  const handleReset = () => {
+    setBoard(Array(9).fill(null));
+    setIsXNext(true);
+  };
+
+  // Display winner or draw alert
+  if (winner) {
+    Alert.alert(`Player ${winner} wins!`, '', [
+      { text: 'OK', onPress: handleReset },
+    ]);
+  } else if (board.every(cell => cell !== null)) {
+    Alert.alert('It\'s a draw!', '', [
+      { text: 'OK', onPress: handleReset },
+    ]);
+  }
 
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
+    <View style={styles.container}>
+      <Text style={styles.title}>Tic-Tac-Toe</Text>
+      <View style={styles.board}>
+        <View style={styles.row}>
+          {renderSquare(0)}
+          {renderSquare(1)}
+          {renderSquare(2)}
         </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+        <View style={styles.row}>
+          {renderSquare(3)}
+          {renderSquare(4)}
+          {renderSquare(5)}
         </View>
-      </ScrollView>
+        <View style={styles.row}>
+          {renderSquare(6)}
+          {renderSquare(7)}
+          {renderSquare(8)}
+        </View>
+      </View>
+      <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+        <Text style={styles.resetButtonText}>Restart Game</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
 
+// Styles for the app
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  title: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: "red",
+    marginBottom: 20,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  board: {
+    backgroundColor: "orange",
+    marginBottom: 20,
   },
-  highlight: {
-    fontWeight: '700',
+  row: {
+    flexDirection: 'row',
+  },
+  square: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'green',
+  },
+  squareText: {
+    fontSize: 50,
+    color: "red",
+    fontWeight: 'bold',
+  },
+  resetButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 15,
+  },
+  resetButtonText: {
+    color: '#fff',
+    fontSize: 30,
   },
 });
 
