@@ -75,6 +75,16 @@ function accountGenerator(accountName, initBalance) {
 
 function distributeTips(...args) {
   // Your implementation here
+  let result = {food: 0, drink: 0};
+  args.forEach((tip, index) => {
+    if (index % 2 === 0) {
+      result.food += tip;
+    } else {
+      result.drink += tip;
+    }
+  });
+
+  return result;
 }
 
 /**
@@ -106,6 +116,9 @@ function distributeTips(...args) {
 
 function greetingGenerator(defaultGreeting = "Hello") {
   // Your implementation here
+  return function(name, greeting) {
+    return `${greeting || defaultGreeting}, ${name}!`; 
+  };
 }
 
 /**
@@ -129,6 +142,13 @@ function greetingGenerator(defaultGreeting = "Hello") {
 
 function mergeAndExtract(array1, array2) {
   // Your implementation here
+  const mergedArray = [...array1, ...array2];
+  const [first, second, ...remaining] = mergedArray;
+  return {
+    first,
+    second,
+    remaining
+  };
 }
 
 /**
@@ -159,6 +179,11 @@ function mergeAndExtract(array1, array2) {
 
 function calculateAlternatingHarmonic(n, accumulator = 0, index = 1) {
   // Your implementation here
+  if (index > n) {
+    return accumulator;
+  }
+  const term = (index % 2 === 0 ? -1 : 1) * 1 / index;
+  return calculateAlternatingHarmonic(n, accumulator + term, index +1);
 }
 
 // Export the function for testing
