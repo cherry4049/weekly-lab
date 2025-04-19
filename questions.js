@@ -41,6 +41,36 @@
  */
 function createAccount(accountName, openingBalance) {
   // your implementation here
+  if (!(this instanceof createAccount)) {
+    return new createAccount(accountName, openingBalance);
+  }
+
+  // private variables
+  let balance = openingBalance;
+  const transactions = [{ action: "open", amount: openingBalance }];
+
+  //define method
+  this.deposit = function(amount) {
+    if (amount <= 0) return "Invalid deposit amount";
+    balance += amount;
+    transactions.push({ action: "deposit", amount });
+    return "OK";
+  };
+
+  this.withdraw = function(amount) {
+    if (amount <=0) return "Invalid withdrawal amount";
+    if (amount > balance) return "Withdraw over balance";
+    balance -= amount;
+    transactions.push({ action: "withdraw", amount });
+    return "OK";
+  };
+
+  this.checkAccount = function() {
+    return {
+      transactions: [...transactions],
+      balance: balance
+    };
+  };
 }
 
 /**
@@ -57,6 +87,34 @@ function createAccount(accountName, openingBalance) {
  */
 function Person(initialName, initialAge) {
   // your implementation here
+  let name = capitalizeFirstLetter(initialName);
+  let age = initialAge;
+
+  function capitalizeFirstLetter(name) {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
+
+  return {
+    get getName() {
+    return name;
+    },
+
+    set setName(newName) {
+      name = capitalizeFirstLetter(newName);
+    },
+
+    get getAge() {
+      return age;
+    },
+
+    set setAge(newAge) {
+      if (typeof newAge === "number" && newAge >= 0 && newAge < 120) {
+        age = newAge;
+      } else {
+        console.log ("Invalid age provided");
+      }
+    }, 
+  };
 }
 
 /**
@@ -92,10 +150,31 @@ function Person(initialName, initialAge) {
 
 class Car {
   // your implementation here
+  constructor(make, model, year) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+  }
+
+  getInfo() {
+    return `${this.make} ${this.model} ${this.year}`;
+  }
 }
 
 class ElectricCar extends Car {
   // your implementation here
+  constructor(make, model, year, batteryLevel) {
+    super(make, model, year);
+    this.batteryLevel = batteryLevel;
+  }
+
+  getBatteryInfo() {
+    return `Battery level at ${this.batteryLevel}%`;
+  }
+
+  getInfo() {
+    return `${this.make} ${this.model} ${this.year} with ${this.batteryLevel}% battery`;
+  }
 }
 
 /**
@@ -113,11 +192,13 @@ class ElectricCar extends Car {
 // Extending Array.prototype to include serialize method
 Array.prototype.serialize = function () {
   // your implementation here
+  return JSON.stringify(this);
 };
 
 // Extending Array.prototype to include deserialize method
 Array.prototype.deserialize = function (json) {
   // your implementation here
+  this.splice(0, this.length, ...JSON.parse(json));
 };
 
 /**
@@ -141,7 +222,52 @@ Array.prototype.deserialize = function (json) {
 
 function createShoppingCart() {
   // your implementation here
+  const items = new Map();
+
+  const cart = {
+    addItem(id, name, price) {
+      if (items.has(id)) {
+        items.get(id).quantity += 1;
+      } else {
+        items.set(id, { id, name, price, quantity: 1 });
+      }
+    },
+  
+    removeItem(id) {
+      if (items.has(id)) {
+        const item = items.get(id);
+        item.quantity -= 1;
+        if (item.quantity <=0) {
+          items.delete(id);
+        }
+      }
+    },
+      
+    get totalPrice() {
+      return Array.from(items.values()).reduce(
+        (sum, item) => sum + item.price * item.quantity, 0
+      );
+    },
+
+    get itemNumber() {
+      return Array.from(items.values()).reduce(
+        (sum, item) => sum + item.quantity, 0
+      );
+    }
+  };
+
+  cart.check = function () {
+    const itemList = Array.from(items.values());
+    return {
+      itemNumber: cart.itemNumber,
+      total: cart.totalPrice,
+      items: itemList
+    };
+  };
+
+  return cart;
 }
+ 
 
 module.exports = {
   Car,
