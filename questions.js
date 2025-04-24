@@ -30,15 +30,23 @@
 
 function containDigit(str) {
   // Write your implementation
+  return /\d/g.test(str); 
 }
 
 function containCapital(str) {
   // Write your implementation
+  return /[A-Z]/g.test(str);
 }
+console.log(containCapital("Hello World"));
 
 function validPlate(str) {
   // Write your implementation
+  return /^[A-Z]{3}\d{3}$/.test(str);
 }
+
+const platePattern = "ABc123";
+console.log(validPlate(platePattern));
+console.log(validPlate("ABC123"));
 
 // Question 2 Using Regular Expression Function `.match()`
 // 1. findWordsWithVowels: Return all words containing vowels from a given string.
@@ -48,15 +56,22 @@ function validPlate(str) {
 // in lowercase. For instance, both "My" and "my" should return "my"
 function findWordsWithVowels(str) {
   // Write your implementation
+  const wordsWithVowels = str.toLowerCase().match(/\b\w*[aeiou]\w*\b/g);
+  return wordsWithVowels || [];
 }
+console.log(findWordsWithVowels("I have a red shy cat"));
+
 function findWordsEndingWithDigit(str) {
   // Write your implementation
+  return str.toLowerCase().match(/\b\w*[0-9]\b/g) || [];
 }
+console.log(findWordsEndingWithDigit("big ca3t 123 no. 5"));
 
 function findWordsWithPattern(str) {
   // Write your implementation
+  return str.match(/\b[bkdl]\w*\b/gi) || [];
 }
-
+console.log(findWordsWithPattern("please check this line for error"));
 // Question 3: Format an array of product strings into an array of objects with 'id' and 'title' properties.
 // The 'id' should be a camel-cased, lowercase version of the product name with special characters removed.
 // The 'title' should capitalize each word for display, making it human-readable.
@@ -69,7 +84,26 @@ function findWordsWithPattern(str) {
 // ]
 function formatProductNames(products) {
   // Write your implementation
+  return products.map(product => {
+    const id = product
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+(\w)/g, (_, c) => c.toUpperCase())
+      .replace(/\s/g, '');
+
+    // const title = product
+    //   .split(' ')
+    //   .map(word =>word.charAt(0).toUpperCase() + word.slice(1))
+    //   .join(' ');
+    const title = product.replace(/(^|\s)\w/g, (letter) =>
+      letter.toUpperCase()
+    );
+
+    return { id, title };
+  });
 }
+console.log(formatProductNames(["shoes", "women's cloth"]));
+
 
 // Question 4: Write an asynchronous function `getCategories` that retrieves a list of categories from the Fake Store API.
 // The function should make a network request to 'https://fakestoreapi.com/products/categories' and return an array of category strings provided by the API.
@@ -77,6 +111,17 @@ function formatProductNames(products) {
 // Note: you can find the api documents at: https://fakestoreapi.com/docs
 async function getCategories() {
   // Write your implementation
+  try {
+    const response = await fetch('https://fakestoreapi.com/products/categories');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const categories = await response.json();
+    return categories; // should be an array of category strings
+  } catch (err) {
+    console.error("Failed to fetch categories:", err.message);
+    return []; //return an empty array if something goes wrong.
+  }
 }
 
 // Question 5: Write an asynchronous function `getGoodProducts` that retrieves products from a specified category with a rating equal to or higher than a given minimum.
@@ -87,7 +132,27 @@ async function getCategories() {
 // Note: you can find the api documents at: https://fakestoreapi.com/docs
 async function getGoodProducts(category, minRate) {
   // Write your implementation
+  try {
+    const response = await fetch('https://fakestoreapi.com/products/');
+    const products = await response.json();
+
+    //filter and map in one go
+    return products
+      .filter(
+        (product) =>
+          product.category === category && product.rating.rate >= minRate
+      )
+      .map((product) => ({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        rate: product.rating.rate,
+      }));
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
 }
+
 
 module.exports = {
   containDigit,
