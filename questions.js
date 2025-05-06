@@ -47,6 +47,12 @@
 
 function abbreviateName(name) {
   // Implementation using regular expression
+  return name
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/^(\w)(?:\w*)\s+(?:(\w)(?:\w*)\s+)?(\w+)$/, (_, f, m, l) => {
+      return m ? `${l}, ${f}. ${m}.` : `${l}, ${f}.`;
+    });
 }
 
 /**
@@ -74,6 +80,8 @@ function abbreviateName(name) {
  */
 function isValidAustralianMobile(number) {
   // Implementation using regular expression
+  const cleaned = number.replace(/[\s-]/g, '');
+  return /^(\(04\)|04)\d{8}$/.test(cleaned);
 }
 
 /**
@@ -96,10 +104,16 @@ function isValidAustralianMobile(number) {
 
 function describeFunction(func) {
   // Your implementation here
+  const name = func.name || 'anonymous';
+  const paramCount = func.length;
+  return `${name} is a function expecting ${paramCount} parameters.`;
 }
 
 function createFunction(name, length) {
   // Your implementation here (optional exercise)
+  const params = Array.from({ length }, (_, i ) => `arg${i + 1}`).join(', ');
+  const fnCode = `return function ${name}(${params}) {}`;
+  return new Function(fnCode)();
 }
 /**
  * Question 4: Using Function Methods - Apply and Call
@@ -121,6 +135,9 @@ function createFunction(name, length) {
  */
 function invokeWithApplyAndCall(func, context, argsArray) {
   // Your implementation here
+  const resultWithApply = func.apply(context, argsArray);
+  const resultWithCall = func.call(context, ...argsArray);
+  return [resultWithApply, resultWithCall];
 }
 
 /**
@@ -141,6 +158,7 @@ function invokeWithApplyAndCall(func, context, argsArray) {
  */
 function bindFunction(func, context, ...boundArgs) {
   // Your implementation here
+  return func.bind(context, ...boundArgs);
 }
 
 module.exports = {

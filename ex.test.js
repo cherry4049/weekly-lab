@@ -75,7 +75,7 @@ describe("Question 3: Function Reflection and Dynamic Creation", () => {
   });
   // if you like challenge, you may remove the skip from the line before and try
   // to pass this test case :)
-  it.skip("should correctly create a function with the given name and length", () => {
+  it("should correctly create a function with the given name and length", () => {
     const dynamicFunc = createFunction("dynamic", 2);
     expect(dynamicFunc.name).toEqual("dynamic");
     expect(dynamicFunc.length).toEqual(2);
